@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsive Candidate UI</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #f2f2f2;
+}
+
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+
+.left {
+    width: 35%;
+    background: #dcd6d6;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.left h2 {
+    margin: 10px 0;
+}
+
+.search {
+    width: 100%;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #aaa;
+    margin-bottom: 15px;
+}
+
+.card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #cfc7c7;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.card img {
+    width: 40px;
+}
+
+.name {
+    flex: 1;
+    margin-left: 10px;
+}
+
+.card.active {
+    border: 2px solid blue;
+}
+
+
+.right {
+    width: 65%;
+    background: white;
+    padding: 20px;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+}
+
+.profile img {
+    width: 80px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.info p {
+    margin: 5px 0;
+}
+
+.skills {
+    margin-top: 20px;
+}
+
+.skill {
+    margin-bottom: 15px;
+}
+
+.bar {
+    height: 8px;
+    background: #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.fill {
+    height: 100%;
+    background: linear-gradient(to right, blue, purple);
+}
+
+.btn {
+    width: 100%;
+    margin-top: 25px;
+    padding: 12px;
+    background: #2f6fed;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .left, .right {
+        width: 100%;
+        height: auto;
+    }
+
+    .profile {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile img {
+        margin-bottom: 10px;
+    }
+
+    .card {
+        flex-direction: row;
+        padding: 12px;
+    }
+
+    .name {
+        font-size: 14px;
+    }
+
+    .btn {
+        font-size: 14px;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+
+    <div class="left">
+        <h2>Candidate List</h2>
+        <input type="text" class="search" placeholder="Search Name" onkeyup="searchCandidate(this.value)">
+
+        <div id="list">
+            <div class="card active" onclick="select(this,'Abhi')">
+                <img src="C:\AI Resume & Job Maching System\Images\mailicon.png">
+                <div class="name">Abhi</div>
+                <div>Mar 14</div>
+            </div>
+
+            <div class="card" onclick="select(this,'Sayali')">
+                <img src="C:\AI Resume & Job Maching System\Images\FemailIcon.png">
+                <div class="name">Sayali</div>
+                <div>Mar 10</div>
+            </div>
+
+            <div class="card" onclick="select(this,'Soham')">
+                <img src="C:\AI Resume & Job Maching System\Images\mailicon.png">
+                <div class="name">Soham</div>
+                <div>Mar 10</div>
+            </div>
+            <div class="card" onclick="select(this,'Pranali')">
+                <img src="C:\AI Resume & Job Maching System\Images\FemailIcon.png">
+                <div class="name">Pranali</div>
+                <div>Mar 09</div>
+            </div>
+            <div class="card" onclick="select(this,'Mayuri')">
+                <img src="C:\AI Resume & Job Maching System\Images\FemailIcon.png">
+                <div class="name">Mayuri</div>
+                <div>Mar 08</div>
+            </div>
+            <div class="card active" onclick="select(this,'Sahil')">
+                <img src="C:\AI Resume & Job Maching System\Images\mailicon.png">
+                <div class="name">Sahil</div>
+                <div>Mar 07</div>
+            </div>
+            <div class="card active" onclick="select(this,'Viraj')">
+                <img src="C:\AI Resume & Job Maching System\Images\FemailIcon.png">
+                <div class="name">Viraj</div>
+                <div>Mar 07</div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="right">
+
+        <div class="profile">
+            <img src="C:\AI Resume & Job Maching System\Images\FemailIcon.png">
+            <div class="info">
+                <h3 id="profileName">Sayali</h3>
+                <p>📧 sayali@gmail.com</p>
+                <p>📍 Kolhapur</p>
+            </div>
+        </div>
+
+        <div class="skills">
+            <h3>Skills</h3>
+            <div class="skill">
+            HTML 9/10
+            <div class="bar"><div class="fill" style="width:90%"></div></div>
+        </div>
+
+            <div class="skill">
+            CSS 8/10
+            <div class="bar"><div class="fill" style="width:80%"></div></div>
+        </div>
+
+            <div class="skill">
+            JavaScript 7/10
+            <div class="bar"><div class="fill" style="width:70%"></div></div>
+            </div>
+
+            <div class="skill">
+            React.js 6/10
+            <div class="bar"><div class="fill" style="width:60%"></div></div>
+        </div>
+
+            <div class="skill">
+            Node.js 7/10
+            <div class="bar"><div class="fill" style="width:70%"></div></div>
+        </div>
+
+            <div class="skill">
+            MongoDB 6/10
+            <div class="bar"><div class="fill" style="width:60%"></div></div>
+        </div>
+
+            <div class="skill">
+                UI Design 7/10
+                <div class="bar"><div class="fill" style="width:70%"></div></div>
+            </div>
+
+            <div class="skill">
+                Figma 8/10
+                <div class="bar"><div class="fill" style="width:80%"></div></div>
+            </div>
+
+            <div class="skill">
+                Interaction Design 9/10
+                <div class="bar"><div class="fill" style="width:90%"></div></div>
+            </div>
+        </div>
+
+        <button class="btn">Schedule An Interview</button>
+
+    </div>
+
+</div>
+
+<script>
+const candidates = {
+    "Abhi": {
+        email: "abhi@gmail.com",
+        location: "Pune",
+        img: "Images/mailicon.png",
+        skills: [70, 60, 80]
+    },
+    "Sayali": {
+        email: "sayali@gmail.com",
+        location: "Kolhapur",
+        img: "Images/FemailIcon.png",
+        skills: [70, 80, 90]
+    },
+    "Soham": {
+        email: "soham@gmail.com",
+        location: "Mumbai",
+        img: "Images/mailicon.png",
+        skills: [60, 75, 85]
+    },
+    "Pranali": {
+        email: "pranali@gmail.com",
+        location: "Nagpur",
+        img: "Images/FemailIcon.png",
+        skills: [80, 85, 90]
+    },
+    "Mayuri": {
+        email: "mayuri@gmail.com",
+        location: "Pune",
+        img: "Images/FemailIcon.png",
+        skills: [75, 70, 88]
+    },
+    "Sahil": {
+        email: "sahil@gmail.com",
+        location: "Delhi",
+        img: "Images/mailicon.png",
+        skills: [65, 78, 82]
+    },
+    "Viraj": {
+        email: "viraj@gmail.com",
+        location: "Bangalore",
+        img: "Images/mailicon.png",
+        skills: [85, 80, 90]
+    }
+};
+
+
+function select(el, name) {
+    document.querySelectorAll(".card").forEach(c => c.classList.remove("active"));
+    el.classList.add("active");
+
+    let data = candidates[name];
+
+    document.getElementById("profileName").innerText = name;
+    document.querySelector(".profile img").src = data.img;
+    document.querySelector(".info p:nth-child(2)").innerText = "📧 " + data.email;
+    document.querySelector(".info p:nth-child(3)").innerText = "📍 " + data.location;
+
+    let fills = document.querySelectorAll(".fill");
+    fills[0].style.width = data.skills[0] + "%";
+    fills[1].style.width = data.skills[1] + "%";
+    fills[2].style.width = data.skills[2] + "%";
+}
+
+
+function searchCandidate(value) {
+    document.querySelectorAll(".card").forEach(card => {
+        let name = card.querySelector(".name").innerText.toLowerCase();
+        card.style.display = name.includes(value.toLowerCase()) ? "flex" : "none";
+    });
+}
+</script>
+</body>
+</html>

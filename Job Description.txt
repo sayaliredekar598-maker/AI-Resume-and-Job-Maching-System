@@ -1,0 +1,196 @@
+REACT DEVLOPER-
+
+We are looking for a skilled React Developer to join our frontend team. The candidate should have strong experience in building responsive web applications using React.js, JavaScript, HTML, and CSS.
+
+Key Responsibilities:
+- Develop user interfaces using React.js
+- Work with REST APIs and integrate backend services
+- Use state management tools like Redux
+- Ensure responsive and cross-browser compatibility
+
+Required Skills:
+React.js, JavaScript, HTML, CSS, Redux, REST API, Git
+
+
+NODE.JS BACKEND DEVLOPER
+We are seeking a Node.js Developer with experience in building scalable backend applications. The ideal candidate should be proficient in server-side development and database management.
+
+Key Responsibilities:
+- Develop backend services using Node.js and Express.js
+- Build RESTful APIs
+- Work with databases like MongoDB or MySQL
+- Handle authentication and security
+
+Required Skills:
+Node.js, Express.js, MongoDB, MySQL, REST API, JWT, Git
+
+
+FULLSTACK DEVLOPER-
+
+We are looking for a Full Stack Developer who can work on both frontend and backend technologies.
+
+Key Responsibilities:
+- Develop frontend using React.js
+- Build backend using Node.js and Express
+- Work with MongoDB database
+- Integrate APIs and manage deployment
+
+Required Skills:
+React.js, Node.js, Express.js, MongoDB, JavaScript, REST API
+
+
+Job Title: Junior Web Developer
+
+Job Description:
+We are looking for a Junior Web Developer who can build and maintain basic web applications. The candidate should have knowledge of frontend and backend technologies.
+
+Required Skills:
+
+HTML
+CSS
+JavaScript
+Basic knowledge of Node.js
+Basic understanding of databases (MySQL or MongoDB)
+
+Responsibilities:
+
+Develop simple web pages
+Fix bugs and improve performance
+Work with APIs
+Collaborate with team members
+
+Experience:
+
+0–1 year (Fresher can apply)
+
+
+2. Backend Developer
+
+Job Title: Backend Developer
+
+Job Description:
+We are looking for a Backend Developer who can develop server-side logic and APIs.
+
+Required Skills:
+
+Node.js
+Express.js
+REST APIs
+MongoDB / MySQL
+
+Responsibilities:
+
+Build APIs
+Manage database
+Handle server requests
+
+
+3. Full Stack Developer
+
+Job Title: Full Stack Developer
+
+Job Description:
+Looking for a developer who can work on both frontend and backend.
+
+Required Skills:
+
+HTML, CSS, JavaScript
+Node.js
+React.js
+MongoDB
+
+Responsibilities:
+
+Build full web applications
+Work on frontend and backend
+Integrate APIs
+
+
+PPT Points With Explanation
+Project Title & Vision
+AI Resume & Job Matching System is a dual-mode platform for students and companies.
+It helps students improve resume quality (ATS readiness) and helps recruiters rank candidates against a job description.
+
+Problem Statement
+Resume screening is often manual, slow, and inconsistent.
+Students don’t know why resumes get rejected, and recruiters spend too much time shortlisting.
+
+Core Objective
+Build one system that:
+
+analyzes a single resume for ATS quality, and
+compares multiple resumes against a job role to find best matches.
+Two User Flows (Key Feature Split)
+
+Student Flow (Dashboard): upload one resume → get ATS score + detailed improvement tips.
+Company Flow (For Company): upload JD + multiple resumes → get ranked list + downloadable report PDF.
+Student ATS Engine (What Makes It Strong)
+In Dashboard/atsScoreModel.js, scoring is not just random keywords; it checks structured factors:
+
+contact details (email/phone/links),
+standard sections (experience/education/skills/projects),
+formatting signals (bullets, dates),
+content depth and word diversity,
+action verbs and quantified impact.
+This gives a more explainable score.
+AI Enrichment Layer
+If OPENAI_API_KEY is available, ATS feedback is enriched with GPT-based personalized suggestions.
+So the system can work in both modes: rule-based only and rule + AI guidance.
+
+Company Matching Intelligence
+In For Company/server.js + sbert_api.py, you use semantic matching:
+
+resume text embedding,
+job description embedding,
+cosine similarity score (SBERT).
+This is stronger than plain keyword matching because it captures meaning similarity.
+Automated Recruiter Output
+Company mode auto-generates:
+
+ranked candidate table (name/email/phone/score),
+resume download links,
+consolidated PDF report for quick hiring decisions.
+Tech Stack Used
+
+Frontend: HTML, CSS, JavaScript
+Backend: Node.js + Express
+File/Text Processing: multer, pdf-parse, mammoth
+AI/NLP: SentenceTransformers (Flask API), optional OpenAI enrichment
+Database: MySQL (mysql2)
+Security: bcryptjs, jsonwebtoken (company backend dependencies)
+User Experience Highlights
+Clean dashboards, drag-and-drop upload, progress feedback, and separate interfaces for student/company roles.
+This makes the project easy to demo in a live presentation.
+
+Business/Real-World Impact
+
+Reduces recruiter screening effort.
+Increases students’ interview readiness through actionable feedback.
+Creates a bridge between employability improvement and recruitment efficiency.
+Current Limitations (Good to Mention Honestly)
+
+Mostly local setup (localhost endpoints).
+Mixed authentication approach (part localStorage-based, part backend auth).
+Hardcoded DB credentials in config (needs environment variables).
+Mentioning these shows maturity in analysis.
+Future Scope
+
+Cloud deployment + role-based production auth.
+Better OCR support for scanned PDFs.
+JD-specific feedback for students.
+Interview recommendation engine and analytics dashboard for recruiters.
+Suggested Slide Order (Quick)
+Title & Team
+Problem Statement
+Objectives
+System Architecture
+Student Module
+Company Module
+ATS + AI Scoring Logic
+Tech Stack
+Results/Benefits
+Limitations
+Future Enhancements
+Demo + Conclusion
+If you want, I can also prepare a ready-to-speak 2–3 minute presentation script slide-by-slide.
+
