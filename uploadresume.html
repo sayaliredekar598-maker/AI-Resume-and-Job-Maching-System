@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload resume — ATS analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-1: #1e3a5f;
+      --bg-2: #4a78c2;
+      --bg-3: #6eb5d9;
+      --surface: rgba(255, 255, 255, 0.96);
+      --text: #1a2332;
+      --muted: #5c6b7f;
+      --accent: #4a78c2;
+      --accent-dark: #355fa3;
+      --radius: 16px;
+      --shadow: 0 24px 48px rgba(30, 58, 95, 0.28);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "DM Sans", system-ui, sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
+      background-attachment: fixed;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 520px;
+      background: var(--surface);
+      border-radius: calc(var(--radius) + 8px);
+      box-shadow: var(--shadow);
+      padding: 36px 32px 40px;
+    }
+
+    .nav-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .nav-row a {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--accent-dark);
+      text-decoration: none;
+    }
+
+    .nav-row a:hover { text-decoration: underline; }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 1.55rem;
+      letter-spacing: -0.02em;
+    }
+
+    .sub {
+      margin: 0 0 24px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .drop {
+      border: 2px dashed #b8c5d8;
+      border-radius: var(--radius);
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      background: #f8fafc;
+    }
+
+    .drop:hover, .drop.dragover {
+      border-color: var(--accent);
+      background: #f0f6ff;
+    }
+
+    .drop strong { display: block; margin-bottom: 6px; color: var(--text); }
+    .drop span { font-size: 0.88rem; color: var(--muted); }
+
+    input[type="file"] { display: none; }
+
+    .file-name {
+      margin-top: 14px;
+      font-size: 0.9rem;
+      color: var(--accent-dark);
+      font-weight: 600;
+      min-height: 1.4em;
+    }
+
+    button.primary {
+      width: 100%;
+      margin-top: 22px;
+      padding: 14px 20px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(74, 120, 194, 0.35);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    button.primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px rgba(74, 120, 194, 0.4);
+    }
+
+    button.primary:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .note {
+      margin-top: 18px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .err {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: #fef2f2;
+      color: #b91c1c;
+      font-size: 0.88rem;
+      display: none;
+    }
+
+    .err.show { display: block; }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(30, 58, 95, 0.55);
+      backdrop-filter: blur(6px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .overlay.show { display: flex; }
+
+    .overlay-box {
+      background: white;
+      padding: 32px 40px;
+      border-radius: var(--radius);
+      text-align: center;
+      max-width: 320px;
+      box-shadow: var(--shadow);
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 16px;
+      border: 4px solid #e8eef5;
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.85s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .overlay-box p {
+      margin: 0;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .overlay-box small {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="shell">
+      <div class="nav-row">
+        <a href="../HomePage.html">Home</a>
+        <a href="Dashboard.html">Dashboard</a>
+        <a href="uploadresume.html">Upload</a>
+      </div>
+
+      <h1>Analyze your resume</h1>
+      <p class="sub">
+        Upload a resume (PDF recommended) and the server reads text in real time, then runs the
+        <strong>student ATS model</strong> on your content only—no job description. You get a score,
+        breakdown, and a suggestion box. Blank PDFs score <strong>0%</strong> with a clear message.
+        Optional: set <code>OPENAI_API_KEY</code> when starting the server for GPT-4o-mini suggestion enrichment.
+      </p>
+
+      <form id="form" novalidate>
+        <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose file">
+          <strong>Drop your file here</strong>
+          <span>or click to browse · PDF, DOCX, TXT, MD · max 8 MB</span>
+        </div>
+        <input type="file" id="resume" name="resume" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" required>
+        <div class="file-name" id="fileLabel"></div>
+        <div class="err" id="err"></div>
+        <button type="submit" class="primary" id="submitBtn">Run ATS analysis</button>
+      </form>
+
+      <p class="note">
+        Scanned PDFs without a text layer cannot be read—export from Word or Google Docs as PDF with selectable text, or use DOCX.
+      </p>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay" aria-live="polite">
+    <div class="overlay-box">
+      <div class="spinner" aria-hidden="true"></div>
+      <p>Reading &amp; analyzing your resume…</p>
+      <small>This usually takes a few seconds</small>
+    </div>
+  </div>
+
+  <script>
+    const drop = document.getElementById("drop");
+    const input = document.getElementById("resume");
+    const fileLabel = document.getElementById("fileLabel");
+    const form = document.getElementById("form");
+    const err = document.getElementById("err");
+    const overlay = document.getElementById("overlay");
+    const submitBtn = document.getElementById("submitBtn");
+
+    function showErr(msg) {
+      err.textContent = msg;
+      err.classList.add("show");
+    }
+
+    function hideErr() {
+      err.classList.remove("show");
+    }
+
+    drop.addEventListener("click", () => input.click());
+    drop.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        input.click();
+      }
+    });
+
+    ["dragover", "dragenter"].forEach((ev) => {
+      drop.addEventListener(ev, (e) => {
+        e.preventDefault();
+        drop.classList.add("dragover");
+      });
+    });
+    ["dragleave", "drop"].forEach((ev) => {
+      drop.addEventListener(ev, (e) => {
+        e.preventDefault();
+        drop.classList.remove("dragover");
+      });
+    });
+
+    drop.addEventListener("drop", (e) => {
+      const f = e.dataTransfer.files[0];
+      if (f) {
+        const dt = new DataTransfer();
+        dt.items.add(f);
+        input.files = dt.files;
+        updateLabel();
+      }
+    });
+
+    input.addEventListener("change", updateLabel);
+
+    function updateLabel() {
+      const f = input.files[0];
+      fileLabel.textContent = f ? f.name : "";
+      hideErr();
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      hideErr();
+
+      const file = input.files[0];
+      if (!file) {
+        showErr("Please choose a file first.");
+        return;
+      }
+
+      overlay.classList.add("show");
+      submitBtn.disabled = true;
+
+      const formData = new FormData();
+      formData.append("resume", file);
+
+      try {
+        const res = await fetch("http://localhost:3000/ats", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await res.json();
+
+        if (!data || data.score === undefined) {
+          showErr("No data from server. Is the Dashboard backend running on port 3000?");
+          return;
+        }
+
+        sessionStorage.setItem("atsResult", JSON.stringify(data));
+        window.location.href = "AtsScore.html";
+      } catch (err2) {
+        showErr("Could not reach the server. Start it with: npm start (in the Dashboard folder).");
+      } finally {
+        overlay.classList.remove("show");
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATS analysis — Results</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-1: #1e3a5f;
+      --bg-2: #4a78c2;
+      --bg-3: #6eb5d9;
+      --surface: rgba(255, 255, 255, 0.96);
+      --text: #1a2332;
+      --muted: #5c6b7f;
+      --good: #0d9488;
+      --warn: #d97706;
+      --bad: #c53030;
+      --radius: 16px;
+      --shadow: 0 20px 50px rgba(30, 58, 95, 0.22);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "DM Sans", system-ui, sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
+      background-attachment: fixed;
+    }
+
+    .wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 28px 20px 48px;
+    }
+
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .top-nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      opacity: 0.92;
+      padding: 8px 14px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.12);
+      transition: background 0.2s;
+    }
+
+    .top-nav a:hover {
+      background: rgba(255,255,255,0.22);
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: calc(var(--radius) + 6px);
+      box-shadow: var(--shadow);
+      padding: 32px 28px;
+      margin-bottom: 20px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    @media (max-width: 720px) {
+      .hero { grid-template-columns: 1fr; text-align: center; }
+      .score-wrap { margin: 0 auto; }
+    }
+
+    .score-wrap {
+      position: relative;
+      width: 180px;
+      height: 180px;
+    }
+
+    .score-ring {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: conic-gradient(var(--ring-color, var(--good)) var(--p, 0%), #e8eef5 0);
+      display: grid;
+      place-items: center;
+      transition: --p 1s ease-out, background 0.5s;
+    }
+
+    .score-ring::after {
+      content: "";
+      width: 72%;
+      height: 72%;
+      background: white;
+      border-radius: 50%;
+      box-shadow: inset 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .score-num {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-size: 2.35rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text);
+    }
+
+    .score-num span {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-left: 2px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 1.65rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero .tagline {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #eef2f7;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0 0 14px;
+      color: var(--text);
+    }
+
+    .breakdown-row {
+      margin-bottom: 14px;
+    }
+
+    .breakdown-row header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      margin-bottom: 6px;
+      color: var(--muted);
+    }
+
+    .breakdown-row header strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .bar {
+      height: 10px;
+      border-radius: 999px;
+      background: #e8eef5;
+      overflow: hidden;
+    }
+
+    .bar > i {
+      display: block;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--bg-2), var(--bg-3));
+      width: 0%;
+      transition: width 1s ease-out;
+    }
+
+    .grid-1 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    .panel {
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      border: 1px solid #e8eef5;
+    }
+
+    .panel--tips {
+      background: linear-gradient(145deg, #fffbeb 0%, #fef3c7 40%, transparent);
+      border-color: #fde68a;
+    }
+
+    .panel h3 {
+      margin: 0 0 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .panel--tips h3 { color: #b45309; }
+
+    .improve-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .improve-item {
+      border: 1px solid #f2dcb3;
+      border-radius: 12px;
+      background: #fff8ea;
+      padding: 12px;
+    }
+
+    .improve-item h4 {
+      margin: 0 0 8px;
+      font-size: 0.92rem;
+      color: #8a4b00;
+    }
+
+    .improve-item p {
+      margin: 0 0 6px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: #303d4f;
+    }
+
+    .improve-item p:last-child { margin-bottom: 0; }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 8px 14px;
+      background: linear-gradient(145deg, #e8f0fe, #f0f4ff);
+      border: 1px solid #c7d7f7;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #355fa3;
+    }
+
+    .empty-hint {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    .alert-empty {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      font-size: 0.92rem;
+      line-height: 1.45;
+      display: none;
+    }
+
+    .alert-empty.show { display: block; }
+
+    .fade-in {
+      animation: fadeUp 0.6s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="top-nav">
+      <a href="uploadresume.html">← New analysis</a>
+      <a href="Dashboard.html">Dashboard</a>
+    </nav>
+
+    <div class="card hero fade-in" id="heroCard" style="animation-delay: 0.05s;">
+      <div class="score-wrap">
+        <div class="score-ring" id="scoreRing"></div>
+        <div class="score-num" id="scoreNum">0<span>%</span></div>
+      </div>
+      <div>
+        <h1 id="headline">Your ATS-style score</h1>
+        <p class="tagline" id="tagline">Analyzing structure, contact info, and content from your file—no fixed keyword list.</p>
+        <div class="meta" id="meta"></div>
+        <div class="alert-empty" id="emptyAlert" role="status"></div>
+      </div>
+    </div>
+
+    <div class="card fade-in" id="breakdownCard" style="animation-delay: 0.12s; display: none;">
+      <h2 class="section-title">Score breakdown</h2>
+      <div id="breakdown"></div>
+    </div>
+
+    <div class="card fade-in" id="keywordsCard" style="animation-delay: 0.18s; display: none;">
+      <h2 class="section-title">Terms emphasized in your resume</h2>
+      <p class="empty-hint" style="margin-top:-8px;margin-bottom:12px;">Derived from your actual text (frequent meaningful words).</p>
+      <div class="chips" id="keywords"></div>
+    </div>
+
+    <div class="grid-1 fade-in" id="suggestGrid" style="animation-delay: 0.22s;">
+      <div class="panel panel--tips">
+        <h3>Suggested Improvements</h3>
+        <div class="improve-list" id="tipList"></div>
+        <p class="empty-hint" id="tipEmpty" style="display:none;">No improvement suggestions right now.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function escapeHtml(s) {
+      if (s == null) return "";
+      const d = document.createElement("div");
+      d.textContent = String(s);
+      return d.innerHTML;
+    }
+
+    let payload = null;
+    let loadedFromStorage = false;
+
+    try {
+      const raw = sessionStorage.getItem("atsResult");
+      if (raw) {
+        payload = JSON.parse(raw);
+        sessionStorage.removeItem("atsResult");
+        loadedFromStorage = true;
+      }
+    } catch (e) {}
+
+    if (!loadedFromStorage) {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has("score")) {
+        payload = {
+          score: parseInt(params.get("score"), 10),
+          message: params.get("message") || "",
+          feedback: [],
+          breakdown: null,
+          keywords: []
+        };
+        try {
+          if (payload.message) payload.message = decodeURIComponent(payload.message);
+        } catch (e2) {}
+      }
+    }
+
+    if (!payload || payload.score === undefined || Number.isNaN(payload.score)) {
+      const ea = document.getElementById("emptyAlert");
+      if (ea) ea.classList.remove("show");
+      document.getElementById("headline").textContent = "No results yet";
+      document.getElementById("tagline").textContent = "Upload a resume from the previous page to see your analysis.";
+      document.getElementById("scoreNum").innerHTML = "—";
+      document.getElementById("tipList").innerHTML =
+        "<div class='improve-item'><h4>Get started</h4><p>Go to <a href='uploadresume.html'>Upload</a> to run an analysis.</p></div>";
+      document.getElementById("scoreRing").style.setProperty("--p", "0%");
+      document.getElementById("suggestGrid").style.display = "block";
+    } else {
+    const score = Math.min(100, Math.max(0, parseInt(payload.score, 10) || 0));
+    const ring = document.getElementById("scoreRing");
+    const scoreNum = document.getElementById("scoreNum");
+    const ringColor =
+      score >= 72 ? "var(--good)" : score >= 52 ? "var(--warn)" : "var(--bad)";
+    ring.style.setProperty("--ring-color", ringColor);
+
+    let shown = 0;
+    const anim = setInterval(() => {
+      if (shown >= score) {
+        clearInterval(anim);
+        shown = score;
+      } else {
+        shown = Math.min(score, shown + Math.max(1, Math.ceil((score - shown) / 12)));
+      }
+      scoreNum.innerHTML = shown + "<span>%</span>";
+      ring.style.setProperty("--p", shown + "%");
+    }, 28);
+
+    document.getElementById("headline").textContent = escapeHtml(payload.message || "Analysis complete");
+    const emptyAlert = document.getElementById("emptyAlert");
+    const isEmpty = Boolean(payload.emptyResume);
+    const isZeroEdge = score === 0 && (isEmpty || /empty|little readable/i.test(payload.message || ""));
+    if (isZeroEdge) {
+      emptyAlert.textContent = isEmpty
+        ? "Empty resume uploaded: we could not read any text from this file. Export a PDF with selectable text or upload DOCX."
+        : (payload.message || "Not enough text to score.") + " Try a text-based PDF or DOCX export.";
+      emptyAlert.classList.add("show");
+    } else {
+      emptyAlert.classList.remove("show");
+    }
+    document.getElementById("tagline").textContent = payload.aiEnriched
+      ? "Hybrid score: rules-based ATS signals plus AI-reviewed suggestions from your resume text (no job description)."
+      : "Based on readable text from your file: sections, contact details, bullets, dates, vocabulary, action verbs, and measurable outcomes.";
+
+    const meta = document.getElementById("meta");
+    meta.innerHTML = "";
+    if (payload.sourceFormat) {
+      const el = document.createElement("span");
+      el.className = "pill";
+      el.textContent = "Source: " + payload.sourceFormat;
+      meta.appendChild(el);
+    }
+    if (payload.aiEnriched) {
+      const el = document.createElement("span");
+      el.className = "pill";
+      el.textContent = "AI suggestions: on";
+      meta.appendChild(el);
+    }
+    if (payload.fileName) {
+      const el = document.createElement("span");
+      el.className = "pill";
+      el.textContent = "File: " + payload.fileName;
+      meta.appendChild(el);
+    }
+
+    const bd = payload.breakdown;
+    const bdCard = document.getElementById("breakdownCard");
+    const bdRoot = document.getElementById("breakdown");
+    if (bd && typeof bd === "object") {
+      bdCard.style.display = "block";
+      bdRoot.innerHTML = "";
+      for (const key of Object.keys(bd)) {
+        const row = bd[key];
+        if (!row || typeof row.max !== "number") continue;
+        const pct = row.max ? Math.round((row.score / row.max) * 100) : 0;
+        const div = document.createElement("div");
+        div.className = "breakdown-row";
+        div.innerHTML =
+          "<header><strong>" +
+          escapeHtml(row.label || key) +
+          "</strong><span>" +
+          row.score +
+          " / " +
+          row.max +
+          "</span></header>" +
+          '<div class="bar"><i style="width:' +
+          pct +
+          '%"></i></div>';
+        bdRoot.appendChild(div);
+      }
+      requestAnimationFrame(() => {
+        bdRoot.querySelectorAll(".bar > i").forEach((el) => {
+          const w = el.style.width;
+          el.style.width = "0%";
+          requestAnimationFrame(() => {
+            el.style.width = w;
+          });
+        });
+      });
+    }
+
+    const kw = Array.isArray(payload.keywords) ? payload.keywords : [];
+    const kwCard = document.getElementById("keywordsCard");
+    const kwRoot = document.getElementById("keywords");
+    if (kw.length) {
+      kwCard.style.display = "block";
+      kwRoot.innerHTML = kw.map((k) => "<span class='chip'>" + escapeHtml(k) + "</span>").join("");
+    }
+
+    const tips = Array.isArray(payload.improvements) && payload.improvements.length
+      ? payload.improvements
+      : (Array.isArray(payload.feedback) ? payload.feedback : []);
+
+    const tl = document.getElementById("tipList");
+    document.getElementById("tipEmpty").style.display = tips.length ? "none" : "block";
+
+    tl.innerHTML = tips.length
+      ? tips.map((t) => {
+          if (typeof t === "string") {
+            return "<div class='improve-item'><h4>Improvement needed</h4><p>" + escapeHtml(t) + "</p></div>";
+          }
+          return "<div class='improve-item'>" +
+            "<h4>Missing: " + escapeHtml(t.missing || "Details need improvement") + "</h4>" +
+            "<p><strong>What to improve:</strong> " + escapeHtml(t.improve || "-") + "</p>" +
+            "<p><strong>Why it matters:</strong> " + escapeHtml(t.why || "-") + "</p>" +
+          "</div>";
+        }).join("")
+      : "";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard</title>
+  <style>
+    :root {
+      --primary: #0a3d62;
+      --secondary: #4a78c2;
+      --accent: #6eb5d9;
+      --highlight: #f1c40f;
+      --bg-soft: #e6f3f7;
+      --text: #1d2f45;
+      --muted: #5b6f86;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top right, rgba(110, 181, 217, 0.35), transparent 30%), var(--bg-soft);
+    }
+
+    .page-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--primary);
+      color: var(--white);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    nav {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      background: var(--highlight);
+      transition: width 0.25s ease;
+    }
+
+    nav a:hover {
+      color: var(--highlight);
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    .user-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #dce9f2;
+      font-size: 14px;
+    }
+
+    .logout-btn {
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      background: transparent;
+      color: var(--white);
+      padding: 7px 12px;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: 0.25s ease;
+    }
+
+    .logout-btn:hover {
+      background: var(--highlight);
+      border-color: var(--highlight);
+      color: var(--primary);
+    }
+
+    main {
+      flex: 1;
+      width: min(1100px, 92%);
+      margin: 28px auto 35px;
+    }
+
+    .hero {
+      background: linear-gradient(130deg, var(--primary), var(--secondary));
+      border-radius: 18px;
+      color: var(--white);
+      padding: 34px 28px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 22px;
+      box-shadow: 0 16px 32px rgba(10, 61, 98, 0.28);
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+    }
+
+    .hero p {
+      margin: 0;
+      line-height: 1.6;
+      color: #e8f2f8;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .stat-box {
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat-box h3 {
+      margin: 0;
+      font-size: 22px;
+      color: var(--highlight);
+    }
+
+    .stat-box p {
+      margin: 6px 0 0;
+      font-size: 13px;
+      color: #f2f7fb;
+    }
+
+    .section-title {
+      margin: 32px 0 16px;
+      font-size: 24px;
+      color: var(--primary);
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 22px;
+      text-align: center;
+      border: 1px solid rgba(74, 120, 194, 0.2);
+      box-shadow: 0 8px 24px rgba(10, 61, 98, 0.12);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 14px 28px rgba(10, 61, 98, 0.2);
+    }
+
+    .card-img {
+      width: 78px;
+      height: 78px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      color: var(--primary);
+    }
+
+    .card p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .card button {
+      border: none;
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+      color: var(--white);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .card button:hover {
+      transform: scale(1.05);
+      opacity: 0.95;
+    }
+
+    .tip-box {
+      margin-top: 18px;
+      background: #fffdf3;
+      border-left: 5px solid var(--highlight);
+      border-radius: 10px;
+      padding: 14px 16px;
+      color: #695205;
+      font-size: 14px;
+    }
+
+    .footer {
+      background: linear-gradient(135deg, #2c3e50, #3da0c3);
+      color: var(--white);
+      padding: 34px 20px 14px;
+      margin-top: auto;
+    }
+
+    .footer-container {
+      width: min(1100px, 92%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .footer-box a {
+      display: block;
+      text-decoration: none;
+      color: #dfeaf2;
+      margin-top: 6px;
+    }
+
+    .footer-box a:hover {
+      color: var(--white);
+    }
+
+    .footer-bottom {
+      width: min(1100px, 92%);
+      margin: 16px auto 0;
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.3);
+      padding-top: 10px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 860px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <header>
+      <nav>
+        <a href="C:\AI Resume & Job Maching System\HomePage.html">Home</a>
+        <a href="C:\AI Resume & Job Maching System\Dashboard\Dashboard.html">Dashboard</a>
+        <a href="C:\AI Resume & Job Maching System\Dashboard\uploadresume.html">Upload Resume</a>
+      </nav>
+      <div class="user-area">
+        <span id="welcomeText">Hello, Student</span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <h1 id="heroGreeting">Welcome back 👋</h1>
+          <p>
+            Build a stronger profile by uploading your resume and checking your ATS score.
+            Keep improving your resume to increase interview opportunities.
+          </p>
+        </div>
+        <div class="stats">
+          <div class="stat-box">
+            <h3>2</h3>
+            <p>Core Actions</p>
+          </div>
+          <div class="stat-box">
+            <h3>AI</h3>
+            <p>Powered Analysis</p>
+          </div>
+          <div class="stat-box">
+            <h3>24/7</h3>
+            <p>Dashboard Access</p>
+          </div>
+          <div class="stat-box">
+            <h3>Fast</h3>
+            <p>Instant Navigation</p>
+          </div>
+        </div>
+      </section>
+
+      <h2 class="section-title">Student Actions</h2>
+      <section class="features">
+        <div class="card">
+          <img src="C:\AI Resume & Job Maching System\Images\UploadResume1.png" class="card-img" alt="Upload Resume">
+          <h3>Upload Resume</h3>
+          <p>Add your latest resume and keep your profile updated with current skills and experience.</p>
+          <button onclick="goUpload()">Upload Now</button>
+        </div>
+
+        <div class="card">
+          <img src="C:\AI Resume & Job Maching System\Images\resume-score.avif" class="card-img" alt="ATS Score">
+          <h3>Check ATS Score</h3>
+          <p>Analyze your resume against ATS standards and get insights to improve shortlisting chances.</p>
+          <button onclick="goATS()">Check Score</button>
+        </div>
+      </section>
+
+      <div class="tip-box">
+        <strong>Tip:</strong> Upload your newest resume before checking ATS score for the most accurate result.
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-box">
+          <h2>Resume AI</h2>
+          <p>Smart AI Resume & ATS System</p>
+        </div>
+        <div class="footer-box">
+          <h3>Quick Links</h3>
+          <a href="C:\AI Resume & Job Maching System\HomePage.html">Home</a>
+          <a href="C:\AI Resume & Job Maching System\Dashboard\Dashboard.html">Dashboard</a>
+          <a href="C:\AI Resume & Job Maching System\Dashboard\uploadresume.html">Upload Resume</a>
+        </div>
+        <div class="footer-box">
+          <h3>Contact</h3>
+          <p>Email: support@resumeai.com</p>
+          <p>Phone: +91 9876543210</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        © 2026 Resume AI
+      </div>
+    </footer>
+  </div>
+
+  <script src="C:\AI Resume & Job Maching System\Dashboard\script.js"></script>
+  <script>
+    const user = localStorage.getItem("username");
+    const welcomeText = document.getElementById("welcomeText");
+    const heroGreeting = document.getElementById("heroGreeting");
+
+    if (user) {
+      welcomeText.textContent = "Hello, " + user;
+      heroGreeting.textContent = "Welcome back, " + user + " 👋";
+    }
+
+    function logout() {
+      localStorage.removeItem("username");
+      localStorage.removeItem("role");
+      localStorage.removeItem("isLoggedIn");
+      window.location.href = "C:\\AI Resume & Job Maching System\\LoginPage.html";
+    }
+  </script>
+</body>
+</html>
