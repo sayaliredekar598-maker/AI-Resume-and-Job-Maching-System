@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATS results — Resume AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #e6f3f7;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --border: rgba(10, 61, 98, 0.14);
+  --text: #0a3d62;
+  --text-muted: #4f6b80;
+  --accent: #f1c40f;
+  --accent-dim: #d4a80d;
+  --glow: rgba(241, 196, 15, 0.35);
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --shadow: 0 16px 36px rgba(10, 61, 98, 0.16);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  color: var(--text);
+  background: var(--bg-deep);
+  background-image: linear-gradient(135deg, #e6f3f7 0%, #ffffff 55%, #d8ebf7 100%);
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #0a3d62;
+  border-bottom: none;
+  border-radius: 0 0 16px 16px;
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f1c40f, #ffd84d);
+  box-shadow: 0 0 20px var(--glow);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.nav a {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.nav a:hover {
+  color: #f1c40f;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.page-head {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.page-head h1 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.page-head p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow);
+  margin-bottom: 2rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+thead th {
+  text-align: left;
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  background: rgba(10, 61, 98, 0.08);
+  border-bottom: 1px solid var(--border);
+}
+
+tbody td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover td {
+  background: rgba(10, 61, 98, 0.04);
+}
+
+tbody td.name-cell {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* Matches Final ATS Report PDF: plain % text, same thresholds as pdfkit */
+.ats-report-table thead th {
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-size: 0.8rem;
+}
+
+.ats-report-table .resume-link {
+  color: #0a3d62;
+  text-decoration: underline;
+  font-weight: 500;
+  font-size: 0.8125rem;
+}
+
+.ats-report-table .resume-link:hover {
+  color: var(--accent-dim);
+}
+
+.ats-report-table .score-plain {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.ats-report-table .score-plain.pdf-high {
+  color: #15803d;
+}
+
+.ats-report-table .score-plain.pdf-mid {
+  color: #c2410c;
+}
+
+.ats-report-table .score-plain.pdf-low {
+  color: #b91c1c;
+}
+
+.actions {
+  text-align: center;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+  color: #0c1222;
+  box-shadow: 0 8px 24px var(--glow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px var(--glow);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--border);
+  background: var(--bg-card);
+  color: var(--text-muted);
+}
+
+.empty-state p {
+  margin: 0 0 1.25rem;
+  max-width: 32ch;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+.btn-ghost {
+  display: inline-flex;
+  padding: 0.65rem 1.25rem;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid rgba(34, 211, 238, 0.35);
+  border-radius: 999px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-ghost:hover {
+  background: rgba(34, 211, 238, 0.1);
+  border-color: var(--accent);
+}
+
+@media (max-width: 640px) {
+  .site-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .nav {
+    justify-content: center;
+  }
+  thead {
+    display: none;
+  }
+  table, tbody, tr, td {
+    display: block;
+    width: 100%;
+  }
+  tbody tr {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody td {
+    padding: 0.35rem 0;
+    border: none;
+    text-align: left;
+  }
+  tbody td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="../HomePage.html" class="brand">Resume AI</a>
+  <nav class="nav" aria-label="Main">
+    <a href="../HomePage.html">Home</a>
+    <a href="CompanyDashBoard.html">Dashboard</a>
+    <a href="companyuploadfolder.html">Upload</a>
+  </nav>
+</header>
+
+<main>
+  <div class="page-head">
+    <h1>ATS score results</h1>
+    <p>Ranked candidates from your last upload. Download the combined report when you are done reviewing.</p>
+  </div>
+
+  <div class="container" id="resultContainer"></div>
+</main>
+
+<script>
+const stored = JSON.parse(localStorage.getItem("atsData"));
+const container = document.getElementById("resultContainer");
+
+/** Same bands as server.js PDF (>=75 green, >=50 orange, else red) */
+function scorePdfClass(score) {
+  const n = Number(score) || 0;
+  if (n >= 75) return "pdf-high";
+  if (n >= 50) return "pdf-mid";
+  return "pdf-low";
+}
+
+function escapeHtml(s) {
+  if (s == null) return "";
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function formatScorePlain(score) {
+  const raw = String(score ?? "").trim();
+  const display = raw.endsWith("%") ? raw : `${raw}%`;
+  return escapeHtml(display);
+}
+
+function resumeCellHtml(item) {
+  const url = item.resumeDownloadUrl;
+  if (!url) {
+    return `<td data-label="Resume">—</td>`;
+  }
+  return `<td data-label="Resume"><a class="resume-link" href="${escapeHtml(url)}">Download PDF</a></td>`;
+}
+
+if (stored && stored.data && stored.data.length) {
+  let html = `
+    <div class="table-wrap">
+      <table class="ats-report-table">
+        <thead>
+          <tr>
+            <th>id</th>
+            <th>Name</th>
+            <th>Resume</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody>
+  `;
+
+  stored.data.forEach((item, index) => {
+    const scoreCls = scorePdfClass(item.score);
+    html += `
+      <tr>
+        <td data-label="#">${index + 1}</td>
+        <td class="name-cell" data-label="Name">${escapeHtml(item.name)}</td>
+        ${resumeCellHtml(item)}
+        <td data-label="Email">${escapeHtml(item.email)}</td>
+        <td data-label="Phone">${escapeHtml(item.phone)}</td>
+        <td data-label="Score"><span class="score-plain ${scoreCls}">${formatScorePlain(item.score)}</span></td>
+      </tr>
+    `;
+  });
+
+  html += `
+        </tbody>
+      </table>
+    </div>
+    <div class="actions" id="downloadWrap"></div>
+  `;
+
+  container.innerHTML = html;
+  const wrap = document.getElementById("downloadWrap");
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "btn";
+  btn.textContent = "Download final PDF";
+  btn.addEventListener("click", () => downloadPDF(stored.report));
+  wrap.appendChild(btn);
+} else {
+  container.innerHTML = `
+    <div class="empty-state">
+      <p>No results yet. Upload a folder of resumes with a job description to generate ATS scores.</p>
+      <a class="btn-ghost" href="companyuploadfolder.html">Go to upload</a>
+    </div>
+  `;
+}
+
+function downloadPDF(path) {
+  window.open(`http://localhost:3000/download?path=${encodeURIComponent(path)}`);
+}
+</script>
+
+</body>
+</html>

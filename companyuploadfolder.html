@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload resumes — Resume AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #e6f3f7;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --border: rgba(10, 61, 98, 0.14);
+  --text: #0a3d62;
+  --text-muted: #4f6b80;
+  --accent: #f1c40f;
+  --accent-dim: #d4a80d;
+  --glow: rgba(241, 196, 15, 0.35);
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --shadow: 0 16px 36px rgba(10, 61, 98, 0.16);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  color: var(--text);
+  background: var(--bg-deep);
+  background-image: linear-gradient(135deg, #e6f3f7 0%, #ffffff 55%, #d8ebf7 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  background: #0a3d62;
+  border-bottom: none;
+  border-radius: 0 0 16px 16px;
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f1c40f, #ffd84d);
+  box-shadow: 0 0 20px var(--glow);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.nav a {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.nav a:hover {
+  color: #f1c40f;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.nav a[aria-current="page"] {
+  color: var(--bg-deep);
+  background: var(--accent);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.35rem 0.65rem 0.35rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.user-info span {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.user-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(241, 196, 15, 0.55);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.upload-shell {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.25rem 3rem;
+}
+
+.upload-box {
+  width: 100%;
+  max-width: 480px;
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow);
+}
+
+.upload-box h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.upload-box .subtitle {
+  margin: 0 0 1.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+textarea {
+  width: 100%;
+  min-height: 120px;
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--border);
+  resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+textarea::placeholder {
+  color: #6b7f90;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: rgba(34, 211, 238, 0.45);
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.12);
+}
+
+.drop-area {
+  border: 2px dashed rgba(148, 163, 184, 0.35);
+  padding: 2rem 1.5rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  margin-bottom: 1rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.7);
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+}
+
+.drop-area:hover {
+  border-color: rgba(34, 211, 238, 0.4);
+  background: rgba(34, 211, 238, 0.06);
+}
+
+.drop-area.dragover {
+  border-color: var(--accent);
+  background: rgba(34, 211, 238, 0.12);
+  transform: scale(1.01);
+}
+
+.drop-area p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.drop-area strong {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.file-list {
+  text-align: left;
+  max-height: 140px;
+  overflow-y: auto;
+  margin-bottom: 1.25rem;
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--border);
+}
+
+.file-list:empty {
+  display: none;
+}
+
+.file-item {
+  font-size: 0.8rem;
+  padding: 0.5rem 0.35rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  word-break: break-all;
+}
+
+.file-item:last-child {
+  border-bottom: none;
+}
+
+.btn-upload {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.5rem;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+  color: #0c1222;
+  box-shadow: 0 8px 24px var(--glow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-upload:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 32px var(--glow);
+}
+
+.btn-upload:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 640px) {
+  .site-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .header-right {
+    justify-content: space-between;
+  }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="../HomePage.html" class="brand">Resume AI</a>
+  <div class="header-right">
+    <nav class="nav" aria-label="Main">
+      <a href="../HomePage.html">Home</a>
+      <a href="CompanyDashBoard.html">Dashboard</a>
+      <a href="companyuploadfolder.html" aria-current="page">Upload</a>
+    </nav>
+    
+</header>
+
+<div class="upload-shell">
+  <div class="upload-box">
+    <h2>Upload resume folder</h2>
+    <p class="subtitle">Paste your job description, then add PDF resumes (folder or files). Only PDF files are accepted.</p>
+
+    <label class="label" for="jobDesc">Job description</label>
+    <textarea id="jobDesc" placeholder="Paste the full job description here so scores align with your role…"></textarea>
+
+    <label class="label">Resumes (PDF)</label>
+    <div class="drop-area" id="dropArea" role="button" tabindex="0" aria-label="Drop resumes or click to browse">
+      <p>Drag and drop PDF files or a folder here</p>
+      <strong>Click to browse</strong>
+      <input type="file" id="fileInput" webkitdirectory directory multiple hidden>
+    </div>
+
+    <div class="file-list" id="fileList"></div>
+
+    <button type="button" class="btn-upload" onclick="uploadFiles()">Upload &amp; score</button>
+  </div>
+</div>
+
+<script>
+const dropArea = document.getElementById("dropArea");
+const fileInput = document.getElementById("fileInput");
+const fileList = document.getElementById("fileList");
+
+let filesArray = [];
+
+dropArea.addEventListener("click", () => fileInput.click());
+
+dropArea.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    fileInput.click();
+  }
+});
+
+fileInput.addEventListener("change", (e) => {
+  handleFiles(e.target.files);
+});
+
+dropArea.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  dropArea.classList.add("dragover");
+});
+
+dropArea.addEventListener("dragleave", () => {
+  dropArea.classList.remove("dragover");
+});
+
+dropArea.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dropArea.classList.remove("dragover");
+  handleFiles(e.dataTransfer.files);
+});
+
+function handleFiles(files) {
+  for (let file of files) {
+    if (!file.name.toLowerCase().endsWith(".pdf")) continue;
+    if (filesArray.some(f => f.name === file.name)) continue;
+    filesArray.push(file);
+    let div = document.createElement("div");
+    div.classList.add("file-item");
+    div.innerText = file.webkitRelativePath || file.name;
+    fileList.appendChild(div);
+  }
+}
+
+async function uploadFiles() {
+  const jobDesc = document.getElementById("jobDesc").value;
+
+  if (filesArray.length === 0) {
+    alert("Please select files first!");
+    return;
+  }
+
+  if (jobDesc.trim() === "") {
+    alert("Please enter Job Description!");
+    return;
+  }
+
+  const formData = new FormData();
+  filesArray.forEach(file => {
+    formData.append("resumes", file);
+  });
+  formData.append("jobDescription", jobDesc);
+  formData.append("userId", 1);
+
+  try {
+    const res = await fetch("http://localhost:3000/upload", {
+      method: "POST",
+      body: formData
+    });
+
+    if (!res.ok) throw new Error("Server Error");
+
+    const result = await res.json();
+    console.log("ATS Data:", result);
+    localStorage.setItem("atsData", JSON.stringify(result));
+    window.location.href = "companyAtsScore.html";
+  } catch (err) {
+    console.error(err);
+    alert("Upload Failed ❌");
+  }
+}
+</script>
+
+</body>
+</html>

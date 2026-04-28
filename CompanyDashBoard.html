@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Company Dashboard — Resume AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #e6f3f7;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --bg-card-hover: rgba(255, 255, 255, 0.98);
+  --border: rgba(10, 61, 98, 0.14);
+  --text: #0a3d62;
+  --text-muted: #4f6b80;
+  --accent: #f1c40f;
+  --accent-dim: #d4a80d;
+  --glow: rgba(241, 196, 15, 0.35);
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --shadow: 0 16px 36px rgba(10, 61, 98, 0.16);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  color: var(--text);
+  background: var(--bg-deep);
+  background-image: linear-gradient(135deg, #e6f3f7 0%, #ffffff 55%, #d8ebf7 100%);
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #0a3d62;
+  border-bottom: none;
+  border-radius: 0 0 16px 16px;
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f1c40f, #ffd84d);
+  box-shadow: 0 0 20px var(--glow);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.nav a {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.nav a:hover {
+  color: #f1c40f;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.nav a[aria-current="page"] {
+  color: var(--bg-deep);
+  background: var(--accent);
+}
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+.hero {
+  text-align: center;
+  padding: 2rem 0 3rem;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  background: rgba(34, 211, 238, 0.1);
+  border: 1px solid rgba(34, 211, 238, 0.25);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  margin-bottom: 1.25rem;
+}
+
+.hero h1 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.hero p {
+  margin: 0 auto;
+  max-width: 36ch;
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.hero-visual {
+  margin-top: 2.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-visual img {
+  width: min(280px, 70vw);
+  height: auto;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
+  animation: float 5s ease-in-out infinite;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  position: relative;
+  padding: 1.75rem;
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow);
+  transition: transform 0.25s ease, border-color 0.25s, background 0.25s;
+  overflow: hidden;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.08), transparent 50%);
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(34, 211, 238, 0.25);
+  background: var(--bg-card-hover);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  margin-bottom: 1.25rem;
+  background: linear-gradient(145deg, rgba(34, 211, 238, 0.2), rgba(99, 102, 241, 0.15));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.card p {
+  margin: 0 0 1.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.match-steps {
+  margin: 0 0 1.5rem;
+  padding-left: 1.1rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.match-steps li {
+  margin-bottom: 0.35rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.35rem;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+  color: #0c1222;
+  box-shadow: 0 8px 24px var(--glow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 32px var(--glow);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.footer {
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.25);
+  padding: 2.5rem 1.5rem 1.5rem;
+}
+
+.footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.footer-box h2,
+.footer-box h3 {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.footer-box h2 {
+  font-size: 1.05rem;
+}
+
+.footer-box p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.footer-box a {
+  display: block;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+  margin: 0.35rem 0;
+  transition: color 0.2s;
+}
+
+.footer-box a:hover {
+  color: var(--accent);
+}
+
+.footer-bottom {
+  max-width: 1100px;
+  margin: 2rem auto 0;
+  padding-top: 1.25rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+@media (max-width: 640px) {
+  .site-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .nav {
+    justify-content: center;
+  }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="../HomePage.html" class="brand">Resume AI</a>
+  <nav class="nav" aria-label="Main">
+    <a href="../HomePage.html">Home</a>
+    <a href="CompanyDashBoard.html" aria-current="page">Dashboard</a>
+    <a href="companyuploadfolder.html">Upload</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <span class="hero-badge">Company workspace</span>
+    <h1>Welcome back</h1>
+    <p>Upload candidate resumes against your job description and review ATS match scores in one place.</p>
+    <div class="hero-visual">
+      <img src="../Images/UploadResume.png" alt="">
+    </div>
+  </section>
+
+  <section class="features">
+    <article class="card">
+      <div class="card-icon" aria-hidden="true">📁</div>
+      <h3>Upload folder</h3>
+      <p>Bulk-add PDF resumes from a folder and attach your job description for consistent scoring.</p>
+      <button type="button" class="btn" onclick="goUpload()">Open upload</button>
+    </article>
+
+    <article class="card">
+      <div class="card-icon" aria-hidden="true">📊</div>
+      <h3>How ATS score matching works</h3>
+      <p>Use this workflow to generate ATS results for your role. Uploading resumes is required to run matching.</p>
+      <ol class="match-steps">
+        <li>Add your job description in the upload folder.</li>
+        <li>Select one or more resume PDF files.</li>
+        <li>Run upload and scoring to generate ATS results.</li>
+      </ol>
+      <button type="button" class="btn" onclick="goUpload()">Go to upload folder</button>
+    </article>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-box">
+      <h2>Resume AI</h2>
+      <p>Smart resume parsing and ATS-style matching for hiring teams.</p>
+    </div>
+    <div class="footer-box">
+      <h3>Quick links</h3>
+      <a href="../HomePage.html">Home</a>
+      <a href="CompanyDashBoard.html">Dashboard</a>
+      <a href="companyuploadfolder.html">Upload</a>
+    </div>
+    <div class="footer-box">
+      <h3>Contact</h3>
+      <p>Email: support@resumeai.com</p>
+      <p>Phone: +91 9876543210</p>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 Resume AI</div>
+</footer>
+
+<script>
+function goUpload() {
+  window.location.href = "companyuploadfolder.html";
+}
+</script>
+
+</body>
+</html>
